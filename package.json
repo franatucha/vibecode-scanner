@@ -1,0 +1,35 @@
+{
+  "name": "@franatucha/vibecode-scanner",
+  "version": "0.1.0",
+  "description": "Audit AI-generated codebases for the security mistakes vibe coding leaves behind.",
+  "type": "module",
+  "bin": {
+    "vibescan": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "scan:demo": "node dist/cli.js examples/vibe-app"
+  },
+  "keywords": [
+    "security",
+    "scanner",
+    "ai",
+    "vibe-coding",
+    "sast",
+    "cli",
+    "github-action"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

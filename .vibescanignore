@@ -1,0 +1,3 @@
+# The demo app and test fixtures are broken on purpose.
+examples/**
+test/fixtures/**

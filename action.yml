@@ -1,0 +1,63 @@
+name: "VibeCode Scanner"
+description: "Audit AI-generated code for leaked keys, open routes, SQL injection, hallucinated packages and more."
+author: "franatucha"
+branding:
+  icon: "shield"
+  color: "purple"
+
+inputs:
+  path:
+    description: "Directory to scan"
+    default: "."
+  fail-on:
+    description: "Fail the job if any finding is at least this severe (critical, high, medium, low). Empty never fails."
+    default: "critical"
+  min-score:
+    description: "Fail the job if the score is below this number"
+    default: ""
+  online:
+    description: "Check that every dependency exists on npm / PyPI"
+    default: "true"
+  sarif:
+    description: "Also write vibescan.sarif for upload to GitHub code scanning"
+    default: "true"
+
+outputs:
+  score:
+    description: "Score from 0 to 100"
+    value: ${{ steps.scan.outputs.score }}
+  grade:
+    description: "Letter grade, A to F"
+    value: ${{ steps.scan.outputs.grade }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - id: scan
+      shell: bash
+      env:
+        CLI: ${{ github.action_path }}/dist/cli.js
+        SCAN_PATH: ${{ inputs.path }}
+        FAIL_ON: ${{ inputs.fail-on }}
+        MIN_SCORE: ${{ inputs.min-score }}
+        ONLINE: ${{ inputs.online }}
+        SARIF: ${{ inputs.sarif }}
+      run: |
+        args=("$SCAN_PATH")
+        [ "$ONLINE" = "true" ] && args+=(--online)
+
+        node "$CLI" "${args[@]}" --format json --output vibescan.json
+        node "$CLI" "${args[@]}" --format markdown >> "$GITHUB_STEP_SUMMARY"
+        [ "$SARIF" = "true" ] && node "$CLI" "${args[@]}" --format sarif --output vibescan.sarif
+
+        echo "score=$(node -p 'require("./vibescan.json").score')" >> "$GITHUB_OUTPUT"
+        echo "grade=$(node -p 'require("./vibescan.json").grade')" >> "$GITHUB_OUTPUT"
+
+        gate=()
+        [ -n "$FAIL_ON" ] && gate+=(--fail-on "$FAIL_ON")
+        [ -n "$MIN_SCORE" ] && gate+=(--min-score "$MIN_SCORE")
+        node "$CLI" "${args[@]}" "${gate[@]}" --no-color

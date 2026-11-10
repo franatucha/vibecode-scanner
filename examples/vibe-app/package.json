@@ -1,0 +1,16 @@
+{
+  "name": "vibe-app",
+  "private": true,
+  "scripts": { "dev": "next dev", "build": "next build", "test": "echo \"Error: no test specified\" && exit 1" },
+  "dependencies": {
+    "next": "15.5.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "openai": "^5.0.0",
+    "express": "^5.1.0",
+    "cors": "^2.8.5",
+    "pg": "^8.16.0",
+    "next-supabase-easy-auth": "^1.2.0",
+    "openai-stream-helpers-pro": "^0.4.1"
+  }
+}

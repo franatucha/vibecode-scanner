@@ -1,0 +1,2 @@
+{ "name": "clean-app", "private": true, "scripts": { "test": "vitest run" },
+  "dependencies": { "next": "15.5.0", "openai": "^5.0.0", "@upstash/ratelimit": "^2.0.0", "postgres": "^3.4.0" } }
